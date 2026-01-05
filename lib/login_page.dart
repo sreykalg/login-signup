@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:login_signup/auth_helper.dart';
 
 import 'routes_name.dart';
 
@@ -57,9 +58,19 @@ class _LoginPageState extends State<LoginPage> {
               child: Container(
                 alignment: Alignment.bottomRight,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Get.toNamed(RoutesName.signup);
-                    print("Log in button is pressed!");
+                  onPressed: () async {
+                    final user = await AuthHelper.instance.signIn(
+                      emailController.text.trim(),
+                      passwordController.text.trim(),
+                    );
+
+                    if (user != null) {
+                      print("Successfully logged in!");
+                      Get.toNamed(RoutesName.initial);
+                    } else {
+                      print("Login failed");
+                      Get.toNamed(RoutesName.signup);
+                    }
                   },
                   child: Text("Log in"),
                 ),

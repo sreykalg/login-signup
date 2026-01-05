@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:login_signup/auth_helper.dart';
 
 import 'routes_name.dart';
 
@@ -25,7 +26,7 @@ class _SignupPageState extends State<SignupPage> {
         backgroundColor: Colors.blueGrey[700],
       ),
       body: SafeArea(
-        child: Column(  
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
@@ -62,19 +63,31 @@ class _SignupPageState extends State<SignupPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
-                alignment : Alignment.bottomRight,
+                alignment: Alignment.bottomRight,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     String password = passwordController.text.trim();
-                    String confirmPassword = confirmPasswordController.text.trim();
-                
-                    if (password == confirmPassword) {
-                      print("Passwords match!");
+                    String confirmPassword = confirmPasswordController.text
+                        .trim();
+
+                    if (password != confirmPassword) {
+                      print("Passwords do not match!");
+                      return;
+                    }
+
+                    final user = await AuthHelper.instance.signUp(
+                      emailController.text.trim(),
+                      password,
+                    );
+
+                    if (user != null) {
+                      print("Account created!");
                       Get.toNamed(RoutesName.initial);
                     } else {
-                      print("Password doesn't match");
+                      print("Signup failed");
                     }
                   },
+
                   child: Text("Sign Up"),
                 ),
               ),
